@@ -1,10 +1,13 @@
 import java.io.*;
 import java.net.*;
 import javax.swing.*;
+import java.util.*;
 
 public class ChatClient extends JFrame {
     public static final int CHAT_PORT=12345;
-	public static String HOST="localhost";
+	public static String HOST="sk16614c.siemens-pse.sk";
+//	public static String HOST="localhost";
+	//public static String HOST="sk16356c.siemens-pse.sk";
 
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
@@ -46,10 +49,13 @@ public class ChatClient extends JFrame {
         try{
             //Vytvorenie spojenia so serverom
             socket = new Socket(HOST, CHAT_PORT);
-
+			
             //Streamy na komunikaciu
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new OutputStreamWriter(socket.getOutputStream());
+
+			out.write(System.getProperty("user.name","someone") +" appeared\n");
+            out.flush();
         }catch (Exception e){
             System.out.println("Chyba "+e.getMessage());
             System.exit(1);
@@ -61,7 +67,7 @@ public class ChatClient extends JFrame {
         sprava = new JTextField();
         poslat = new JButton();
 
-        setTitle("Chat klient");
+        setTitle("Chatroom");
 
         //Vytvorim textove pole a nepovolim editovat vypisovaciu plochu
         text = new JTextArea();
@@ -78,7 +84,7 @@ public class ChatClient extends JFrame {
         //Panel pre autora
         JPanel panel1a = new JPanel();
         panel1a.setLayout(new javax.swing.BoxLayout(panel1a, javax.swing.BoxLayout.X_AXIS));
-        panel1a.add(new JLabel("Autor: "));
+        panel1a.add(new JLabel("Meno: "));
         panel1a.add(autor);
 
         //Panel pre spravu
@@ -88,12 +94,23 @@ public class ChatClient extends JFrame {
         panel1b.add(sprava);
 
         //Talcidlo poslat spravu
+		
+
         poslat.setText("Posla\u0165");
         poslat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try{
+					//java.util.Date dat=new java.util.Date();
+					//java.sql.Date datt=new java.sql.Date(dat.getTime());
+					Calendar beforeDate=Calendar.getInstance(); 
+					int hour=beforeDate.get(Calendar.HOUR_OF_DAY);
+					int min=beforeDate.get(Calendar.MINUTE);
+					int sec=beforeDate.get(Calendar.SECOND);
+
                     //Odoslanie spravy
-                    out.write(autor.getText()+"> "+sprava.getText()+"\n");
+//			out.write(System.getProperty("USERNAME",".")+" appeared\n");
+//                    out.write(System.getenv("USERNAME")+"("+autor.getText()+")> "+sprava.getText()+"\n");
+                    out.write(System.getProperty("user.name","someone")+" "+hour+":"+min+":"+sec+" ("+autor.getText()+")> "+sprava.getText()+"\n");
                     out.flush();
                     //Vymazanie obsahu pola sprava
                     sprava.setText("");
