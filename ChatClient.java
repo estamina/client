@@ -110,7 +110,7 @@ public class ChatClient extends JFrame {
                     //Odoslanie spravy
 //			out.write(System.getProperty("USERNAME",".")+" appeared\n");
 //                    out.write(System.getenv("USERNAME")+"("+autor.getText()+")> "+sprava.getText()+"\n");
-                    out.write(System.getProperty("user.name","someone")+" "+hour+":"+min+":"+sec+" ("+autor.getText()+")> "+sprava.getText()+"\n");
+                    out.write(System.getProperty("user.name","someone")+" "+"("+autor.getText()+") "+hour+":"+min+":"+sec+"> "+sprava.getText()+"\n"); 
                     out.flush();
                     //Vymazanie obsahu pola sprava
                     sprava.setText("");
