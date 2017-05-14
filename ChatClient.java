@@ -5,9 +5,7 @@ import java.util.*;
 
 public class ChatClient extends JFrame {
     public static final int CHAT_PORT=12345;
-	public static String HOST="sk16614c.siemens-pse.sk";
-//	public static String HOST="localhost";
-	//public static String HOST="sk16356c.siemens-pse.sk";
+	public static String HOST="localhost";
 
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
@@ -49,7 +47,7 @@ public class ChatClient extends JFrame {
         try{
             //Vytvorenie spojenia so serverom
             socket = new Socket(HOST, CHAT_PORT);
-			
+
             //Streamy na komunikaciu
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new OutputStreamWriter(socket.getOutputStream());
@@ -94,7 +92,7 @@ public class ChatClient extends JFrame {
         panel1b.add(sprava);
 
         //Talcidlo poslat spravu
-		
+
 
         poslat.setText("Posla\u0165");
         poslat.addActionListener(new java.awt.event.ActionListener() {
@@ -102,7 +100,7 @@ public class ChatClient extends JFrame {
                 try{
 					//java.util.Date dat=new java.util.Date();
 					//java.sql.Date datt=new java.sql.Date(dat.getTime());
-					Calendar beforeDate=Calendar.getInstance(); 
+					Calendar beforeDate=Calendar.getInstance();
 					int hour=beforeDate.get(Calendar.HOUR_OF_DAY);
 					int min=beforeDate.get(Calendar.MINUTE);
 					int sec=beforeDate.get(Calendar.SECOND);
@@ -110,7 +108,7 @@ public class ChatClient extends JFrame {
                     //Odoslanie spravy
 //			out.write(System.getProperty("USERNAME",".")+" appeared\n");
 //                    out.write(System.getenv("USERNAME")+"("+autor.getText()+")> "+sprava.getText()+"\n");
-                    out.write(System.getProperty("user.name","someone")+" "+"("+autor.getText()+") "+hour+":"+min+":"+sec+"> "+sprava.getText()+"\n"); 
+                    out.write(System.getProperty("user.name","someone")+" "+"("+autor.getText()+") "+hour+":"+min+":"+sec+"> "+sprava.getText()+"\n");
                     out.flush();
                     //Vymazanie obsahu pola sprava
                     sprava.setText("");
