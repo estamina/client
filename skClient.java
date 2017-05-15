@@ -29,25 +29,25 @@ public class skClient extends javax.swing.JFrame {
         private javax.swing.JScrollPane scroll1;
         private javax.swing.JScrollPane scroll2;
         private javax.swing.JScrollPane scroll3;
-        public javax.swing.JTextArea text;
+        javax.swing.JTextArea text;
         private javax.swing.JSplitPane split1;
         private javax.swing.JSplitPane split2;
         private javax.swing.JSplitPane split3;
         private javax.swing.JTextField field;
-        public javax.swing.JList userlist;
+        javax.swing.JList userlist;
         private javax.swing.JList chatlist;
         
-        public String chatname="";
+        String chatname="";
         
         /**
          * initially by -1 server is informed that chatid was not assigned yet
          */
-        public int chatid=-1;
+        int chatid=-1;
         
         /**
          * for private 1 to 1 chat server is informed about participant
          */
-        public String chattobe;
+        String chattobe;
         
         /**
          * text message input is sent to server from here
@@ -208,7 +208,7 @@ public class skClient extends javax.swing.JFrame {
         /**
          * highlights/dims users present in chat
          */
-        public skUsersCellRenderer userscellrenderer;
+        skUsersCellRenderer userscellrenderer;
 
         private skTab(final javax.swing.JTabbedPane skTabbedPane, final javax.swing.DefaultListModel skUserListModel) {
             this.skTabbedPane=skTabbedPane;
@@ -217,12 +217,12 @@ public class skClient extends javax.swing.JFrame {
 
         private final javax.swing.JTabbedPane skTabbedPane;
 
-        private final javax.swing.DefaultListModel skUserListModel;
+        private javax.swing.DefaultListModel skUserListModel;
         
     }
     
     //Streamy na komunikaciu
-    BufferedReader in;
+    private BufferedReader in;
     OutputStreamWriter out;
     
     public skClient(String login) {
@@ -562,7 +562,7 @@ public class skClient extends javax.swing.JFrame {
     private javax.swing.JTextArea skTextArea;
     private javax.swing.JList skUserList;
     // End of variables declaration//GEN-END:variables
-    public javax.swing.DefaultListModel skUserListModel;
+    javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
     
     public skTab addTab(String name, int lid) {
