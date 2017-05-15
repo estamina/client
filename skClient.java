@@ -626,33 +626,6 @@ public class skClient extends javax.swing.JFrame {
         return ltab;
     }
     
-    /**
-     * renders users present in chat different way that others: renders them dimmed
-     */
-    public class skUsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
-        public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            boolean found=false;
-            for (int i=0;i<chatusers.size();i++){
-                if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) {found=true;break;}
-            }
-            if (found){
-                setBackground(isSelected ? Color.blue : Color.white);
-                setForeground(isSelected ? Color.white : Color.gray);
-            }else{
-                setBackground(isSelected ? Color.red : Color.white);
-                setForeground(isSelected ? Color.white : Color.black);
-            }
-            setText(value.toString());
-            return this;
-        }
-        
-        public skUsersCellRenderer() {
-            setOpaque(true);
-        }
-        
-        private ArrayList chatusers=new ArrayList();
-    }
-    
     public void dialog() {
         javax.swing.JOptionPane.showMessageDialog(this,"selected users are\nto be added to this chat");
     }
