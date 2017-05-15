@@ -16,12 +16,10 @@ import java.io.*;
  * @author  sk1u06w4
  */
 public class skClient extends javax.swing.JFrame {
-    //public static final int CHAT_PORT=12345;
+
     public static String HOST="localhost";
     public static int CHAT_PORT=12345;
-    //public static String HOST="sk16356c.siemens-pse.sk";
     
-    //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
     
     /**
@@ -50,12 +48,13 @@ public class skClient extends javax.swing.JFrame {
          * text message input is sent to server from here
          */
         public void fieldActionPerformed(java.awt.event.ActionEvent evt) {
-            try{
+            try {
                 out.write(skCode.MSGINTRO+"\n"+skCode.CLIENT_TEXT+"\n");
                 out.write(new Integer(chatid).toString());
                 out.write("\n");
+                int lines=1;
                 if (chatid==-1){
-                    out.write("1\n");
+                    out.write(lines+"\n");
                     out.write(chattobe+"\n");
                 }else{
                     if (selectedusers!=null){
@@ -68,13 +67,14 @@ public class skClient extends javax.swing.JFrame {
                 }
                 out.write(chatname+"\n");
                 
-                out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
+                out.write(lines+"\n"+skMyNick+"> "+field.getText()+"\n");
                 out.flush();
                 
                 //clear this input field after the text message was sent
                 field.setText("");
-            }catch (Exception e){
-                System.out.println("Chyba1 "+e.getMessage());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Chyba1 "+ex.getMessage());
                 System.exit(1);
             }
         }
@@ -152,7 +152,7 @@ public class skClient extends javax.swing.JFrame {
                 if (anick.compareTo(skMyNick+"\n")!=0)
                     if (findTab(getUser(anick))==null){
                     skTab atb=addTab(anick,-1);
-                    //alternative way: skTabbedPane.setSelectedIndex(jTabbedPane1.getTabCount()-1);
+                    //alternative way: skTabbedPane.setSelectedIndex(skTabbedPane.getTabCount()-1);
                     skTabbedPane.setSelectedComponent(atb.split1);
                     }
             }//chatid is -1 while it is not assigned from server yet
@@ -180,9 +180,13 @@ public class skClient extends javax.swing.JFrame {
                             out.write(selectedusers.get(i).toString()+"\n");
                         }
                         selectedusers=null;
-                    } else out.write("0\n");
+                    } else {
+                        int users=0;
+                        out.write(users+"\n");
+                    }
                     out.write(chatname+"\n");
-                    out.write("1\n"+usersline.toString());
+                    int lines=1;
+                    out.write(lines+"\n"+usersline.toString());
                     out.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -209,8 +213,10 @@ public class skClient extends javax.swing.JFrame {
     
     public skClient(String login) {
         if (login.length()>0){skMyNick=skMyLogin=login;}else{
-            skMyNick=skMyLogin=System.getProperty("user.name","someone");}
-        try{
+            skMyNick=skMyLogin=System.getProperty("user.name","someone");
+        }
+        try {
+            
             BufferedReader setfile=new BufferedReader(new FileReader("setup.ini"));;
             CHAT_PORT=new Integer(setfile.readLine()).intValue();
             setfile.close();
@@ -221,13 +227,28 @@ public class skClient extends javax.swing.JFrame {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new OutputStreamWriter(socket.getOutputStream());
             //out.write(System.getProperty("user.name","someone")+" appeared\n");
-            out.write(skCode.MSGINTRO+"\n"+skCode.ENTER+"\n1\n");
+            int logins=1;//@todo not so necessary to supply number of logins
+            out.write(skCode.MSGINTRO+"\n"+skCode.ENTER+"\n"+logins+"\n");
             out.write(skMyLogin+"\n");//enter
             out.flush();
-        }catch (Exception e){
-            System.out.println("Chyba3 "+e.getMessage());
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+            System.out.println("Chyba3 "+ex.getMessage());
+            System.exit(1);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println("Chyba3.0 "+ex.getMessage());
+            System.exit(1);
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
+            System.out.println("Chyba3.1 "+ex.getMessage());
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Chyba3.2 "+ex.getMessage());
             System.exit(1);
         }
+        
         initComponents();
         tabList = new LinkedList();
         new skNetwork().start();
@@ -406,8 +427,8 @@ public class skClient extends javax.swing.JFrame {
         
         public void run(){
             
-            try{
-                String line;
+            String line;
+            try {
                 
                 while ((line = in.readLine()) != null) {
                     while (line.compareTo(skCode.MSGINTRO)!=0){line = in.readLine();}
@@ -416,12 +437,18 @@ public class skClient extends javax.swing.JFrame {
                 
                 in.close();
                 out.close();
-            }catch (Exception e){
-                System.out.println("Chyba5 "+e.getMessage());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Chyba5 "+ex.getMessage());
+                
             }
+            
             System.exit(0);
         }
         
+        /**
+         * "critical section" for decoding and employing incoming messages
+         */
         public synchronized void decode() {
             int id;
             skTab atb;
