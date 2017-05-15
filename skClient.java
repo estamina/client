@@ -16,7 +16,7 @@ import java.io.*;
  * @author  sk1u06w4
  */
 public class skClient extends javax.swing.JFrame {
-
+    
     public static String HOST="localhost";
     public static int CHAT_PORT=12345;
     
@@ -209,15 +209,24 @@ public class skClient extends javax.swing.JFrame {
          * highlights/dims users present in chat
          */
         skUsersCellRenderer userscellrenderer;
-
-        private skTab(final javax.swing.JTabbedPane skTabbedPane, final javax.swing.DefaultListModel skUserListModel) {
+        
+        private skTab(OutputStreamWriter out, final String skMyNick, final javax.swing.JTabbedPane skTabbedPane, final javax.swing.DefaultListModel skUserListModel, javax.swing.DefaultListModel skChatListModel) {
+            this.out=out;
             this.skTabbedPane=skTabbedPane;
             this.skUserListModel=skUserListModel;
+            this.skChatListModel=skChatListModel;
+            this.skMyNick=skMyNick;
         }
-
+        
         private final javax.swing.JTabbedPane skTabbedPane;
-
+        
         private javax.swing.DefaultListModel skUserListModel;
+        
+        private OutputStreamWriter out;
+        
+        private javax.swing.DefaultListModel skChatListModel;
+
+        private final String skMyNick;
         
     }
     
@@ -568,7 +577,7 @@ public class skClient extends javax.swing.JFrame {
     public skTab addTab(String name, int lid) {
         
         
-        skTab tb=new skTab(skTabbedPane,skUserListModel);
+        skTab tb=new skTab(out, skMyNick, skTabbedPane, skUserListModel, skChatListModel);
         
         tb.initComponents();
         tb.chattobe=getUser(name);
