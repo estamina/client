@@ -405,81 +405,13 @@ public class skClient extends javax.swing.JFrame {
     class skNetwork extends Thread {
         
         public void run(){
-            int id;
-            skTab atb;
             
             try{
                 String line;
                 
                 while ((line = in.readLine()) != null) {
                     while (line.compareTo(skCode.MSGINTRO)!=0){line = in.readLine();}
-                    line = in.readLine();
-                    System.out.println("msgcode:"+line);
-                    int msgCode=new Integer(line).intValue();
-                    switch (msgCode){
-                        case skCode.USERS:
-                            skGlobalUsers.clear();
-                            
-                            int users=new Integer(in.readLine()).intValue();
-                            for (int i=0; i<users;i++) {
-                                skUser user=new skUser();
-                                line=in.readLine();
-                                user.user=line;
-                                if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);} else line=in.readLine();
-                                user.nick=line;
-                                System.out.println(user.nick+" "+user.user);
-                                skGlobalUsers.add(user);
-                            }
-                            updateUserList();
-                            break;
-                        case skCode.CHAT_USERS:
-                            id=new Integer(in.readLine()).intValue();
-                            int iusers=new Integer(in.readLine()).intValue();
-                            String otheruser=null,othernick=null;
-                            ArrayList chatusers=new ArrayList();
-                            for (int i=0;i<iusers;i++){
-                                line=in.readLine();
-                                if(line.compareTo(skMyLogin)!=0)otheruser=line;
-                                line=in.readLine();
-                                if(line.compareTo(skMyNick)!=0)othernick=line;
-                                chatusers.add(line);
-                            }
-                            iusers--;
-                            atb=findTab(id);
-                            if (atb==null){
-                                atb=findTab(otheruser);
-                                if (atb==null) atb=addTab(othernick,id);
-                                else atb.chatid=id;
-                            }
-                            atb.userscellrenderer.chatusers=chatusers;
-                            break;
-                        case skCode.SERVER_TEXT:
-                            id=new Integer(in.readLine()).intValue();
-                            int lines=new Integer(in.readLine()).intValue();
-                            atb=findTab(id);
-                            for (int i=0; i<lines;i++) {
-                                line=in.readLine();
-                                atb.text.append(line+"\n");
-                            }
-                            int itab=skTabbedPane.indexOfComponent(atb.split1);
-                            if (skTabbedPane.getSelectedIndex()!=itab) skTabbedPane.setBackgroundAt(itab,Color.red);
-                            atb.userlist.repaint();
-                            break;
-                        case skCode.CHATS:
-                            //number of chats
-                            line=in.readLine();
-                            id=new Integer(in.readLine()).intValue();
-                            atb=findTab(id);
-                            atb.chatname=in.readLine();
-                            atb.chattobe="";
-                            
-                            int ind=skTabbedPane.indexOfComponent(atb.split1);
-                            skTabbedPane.setTitleAt(ind,atb.chatname);
-                            
-                            break;
-                        default:
-                            skTextArea.append("default  "+line+"\n");
-                    }
+                    decode();
                 }
                 
                 in.close();
@@ -488,6 +420,88 @@ public class skClient extends javax.swing.JFrame {
                 System.out.println("Chyba5 "+e.getMessage());
             }
             System.exit(0);
+        }
+        
+        public synchronized void decode() {
+            int id;
+            skTab atb;
+            String line;
+            try {
+                line = in.readLine();
+                System.out.println("msgcode:"+line);
+                
+                int msgCode=new Integer(line).intValue();
+                switch (msgCode){
+                    case skCode.USERS:
+                        skGlobalUsers.clear();
+                        
+                        int users=new Integer(in.readLine()).intValue();
+                        for (int i=0; i<users;i++) {
+                            skUser user=new skUser();
+                            line=in.readLine();
+                            user.user=line;
+                            if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);} else line=in.readLine();
+                            user.nick=line;
+                            System.out.println(user.nick+" "+user.user);
+                            skGlobalUsers.add(user);
+                        }
+                        updateUserList();
+                        break;
+                    case skCode.CHAT_USERS:
+                        id=new Integer(in.readLine()).intValue();
+                        int iusers=new Integer(in.readLine()).intValue();
+                        String otheruser=null,othernick=null;
+                        ArrayList chatusers=new ArrayList();
+                        for (int i=0;i<iusers;i++){
+                            line=in.readLine();
+                            if(line.compareTo(skMyLogin)!=0)otheruser=line;
+                            line=in.readLine();
+                            if(line.compareTo(skMyNick)!=0)othernick=line;
+                            chatusers.add(line);
+                        }
+                        iusers--;
+                        atb=findTab(id);
+                        if (atb==null){
+                            atb=findTab(otheruser);
+                            if (atb==null) atb=addTab(othernick,id);
+                            else atb.chatid=id;
+                        }
+                        atb.userscellrenderer.chatusers=chatusers;
+                        break;
+                    case skCode.SERVER_TEXT:
+                        id=new Integer(in.readLine()).intValue();
+                        int lines=new Integer(in.readLine()).intValue();
+                        atb=findTab(id);
+                        for (int i=0; i<lines;i++) {
+                            line=in.readLine();
+                            atb.text.append(line+"\n");
+                        }
+                        int itab=skTabbedPane.indexOfComponent(atb.split1);
+                        if (skTabbedPane.getSelectedIndex()!=itab) skTabbedPane.setBackgroundAt(itab,Color.red);
+                        atb.userlist.repaint();
+                        break;
+                    case skCode.CHATS:
+                        //number of chats
+                        line=in.readLine();
+                        id=new Integer(in.readLine()).intValue();
+                        atb=findTab(id);
+                        atb.chatname=in.readLine();
+                        atb.chattobe="";
+                        
+                        int ind=skTabbedPane.indexOfComponent(atb.split1);
+                        skTabbedPane.setTitleAt(ind,atb.chatname);
+                        
+                        break;
+                    default:
+                        skTextArea.append("default  "+line+"\n");
+                }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+                System.out.println("Chyba7 "+ex.getMessage());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Chyba8 "+ex.getMessage());
+            }
         }
     }
     private String skMyLogin;
