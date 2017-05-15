@@ -26,23 +26,28 @@ public class skClient extends javax.swing.JFrame {
      * tab UI
      */
     class skTab{
-        javax.swing.JScrollPane scroll1, scroll2, scroll3;
-        javax.swing.JTextArea text;
-        javax.swing.JSplitPane split1, split2, split3;
-        javax.swing.JTextField field;
-        javax.swing.JList userlist, chatlist;
+        private javax.swing.JScrollPane scroll1;
+        private javax.swing.JScrollPane scroll2;
+        private javax.swing.JScrollPane scroll3;
+        public javax.swing.JTextArea text;
+        private javax.swing.JSplitPane split1;
+        private javax.swing.JSplitPane split2;
+        private javax.swing.JSplitPane split3;
+        private javax.swing.JTextField field;
+        public javax.swing.JList userlist;
+        private javax.swing.JList chatlist;
         
-        private String chatname="";
+        public String chatname="";
         
         /**
          * initially by -1 server is informed that chatid was not assigned yet
          */
-        private int chatid=-1;
+        public int chatid=-1;
         
         /**
          * for private 1 to 1 chat server is informed about participant
          */
-        private String chattobe;
+        public String chattobe;
         
         /**
          * text message input is sent to server from here
@@ -153,7 +158,7 @@ public class skClient extends javax.swing.JFrame {
                     if (findTab(getUser(anick))==null){
                     skTab atb=addTab(anick,-1);
                     //alternative way: skTabbedPane.setSelectedIndex(skTabbedPane.getTabCount()-1);
-                    skTabbedPane.setSelectedComponent(atb.split1);
+                    getSkTabbedPane().setSelectedComponent(atb.split1);
                     }
             }//chatid is -1 while it is not assigned from server yet
             
@@ -203,7 +208,7 @@ public class skClient extends javax.swing.JFrame {
         /**
          * highlights/dims users present in chat
          */
-        private skUsersCellRenderer userscellrenderer;
+        public skUsersCellRenderer userscellrenderer;
         
     }
     
@@ -358,22 +363,22 @@ public class skClient extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this,"leaving this chat");
             try {
                 out.write(skCode.MSGINTRO+"\n"+skCode.CHAT_EXIT+"\n");
-                atb=findTab((javax.swing.JSplitPane )skTabbedPane.getSelectedComponent());
+                atb=findTab((javax.swing.JSplitPane )getSkTabbedPane().getSelectedComponent());
                 out.write(atb.chatid+"\n");
                 out.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            int itab=skTabbedPane.getSelectedIndex();
+            int itab=getSkTabbedPane().getSelectedIndex();
             if (itab>0) {
-                skTabbedPane.remove(itab);
+                getSkTabbedPane().remove(itab);
                 if (atb!=null)tabList.remove(atb);
             }
         }
     }//GEN-LAST:event_skTabbedPaneMouseClicked
     
     private void skTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_skTabbedPaneStateChanged
-        skTabbedPane.setBackgroundAt(skTabbedPane.getSelectedIndex(),java.awt.Color.gray);
+        getSkTabbedPane().setBackgroundAt(getSkTabbedPane().getSelectedIndex(),java.awt.Color.gray);
     }//GEN-LAST:event_skTabbedPaneStateChanged
     
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
@@ -385,7 +390,7 @@ public class skClient extends javax.swing.JFrame {
                 if (findTab(getUser(anick))==null){
                 skTab atb=addTab(anick,-1);
                 //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
-                skTabbedPane.setSelectedComponent(atb.split1);
+                getSkTabbedPane().setSelectedComponent(atb.split1);
                 }
         }//chatid is -1 while it is not assigned from server yet
         
@@ -503,8 +508,8 @@ public class skClient extends javax.swing.JFrame {
                             line=in.readLine();
                             atb.text.append(line+"\n");
                         }
-                        int itab=skTabbedPane.indexOfComponent(atb.split1);
-                        if (skTabbedPane.getSelectedIndex()!=itab) skTabbedPane.setBackgroundAt(itab,Color.red);
+                        int itab=getSkTabbedPane().indexOfComponent(atb.split1);
+                        if (getSkTabbedPane().getSelectedIndex()!=itab) getSkTabbedPane().setBackgroundAt(itab,Color.red);
                         atb.userlist.repaint();
                         break;
                     case skCode.CHATS:
@@ -515,8 +520,8 @@ public class skClient extends javax.swing.JFrame {
                         atb.chatname=in.readLine();
                         atb.chattobe="";
                         
-                        int ind=skTabbedPane.indexOfComponent(atb.split1);
-                        skTabbedPane.setTitleAt(ind,atb.chatname);
+                        int ind=getSkTabbedPane().indexOfComponent(atb.split1);
+                        getSkTabbedPane().setTitleAt(ind,atb.chatname);
                         
                         break;
                     default:
@@ -544,11 +549,11 @@ public class skClient extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JList skChatList;
     private javax.swing.JTextField skMsgField;
-    private javax.swing.JTabbedPane skTabbedPane;
+    public javax.swing.JTabbedPane skTabbedPane;
     private javax.swing.JTextArea skTextArea;
     private javax.swing.JList skUserList;
     // End of variables declaration//GEN-END:variables
-    private javax.swing.DefaultListModel skUserListModel;
+    public javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
     
     public skTab addTab(String name, int lid) {
@@ -561,7 +566,7 @@ public class skClient extends javax.swing.JFrame {
         tb.chatid=lid;
         System.out.println(tb.chattobe);
         
-        skTabbedPane.addTab(name,tb.split1);
+        getSkTabbedPane().addTab(name,tb.split1);
         
         tabList.add(tb);
         return tb;
@@ -654,6 +659,10 @@ public class skClient extends javax.swing.JFrame {
         }
         
         return ltab;
+    }
+
+    public javax.swing.JTabbedPane getSkTabbedPane() {
+        return skTabbedPane;
     }
     
 }
